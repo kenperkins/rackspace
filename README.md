@@ -1,3 +1,3 @@
 # Rackspace
 
-The official node.js package for Rackspace.
+The working repository for the node.js package for Rackspace.
