@@ -1,6 +1,7 @@
 //
 
 var identity = require('../lib/client/identity'),
+    services = require('../lib/client/services').services,
     should = require('should'),
     nock = require('nock'),
     _ = require('underscore'),
@@ -116,12 +117,12 @@ describe('Authentication Tests', function() {
                 .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
-        identity.authorize(cfg, function(err, catalog) {
+        identity.authorize(cfg, function(err, identity) {
 
             should.not.exist(err);
-            should.exist(catalog);
-            should.exist(catalog.token);
-            should.exist(catalog.services);
+            should.exist(identity);
+            should.exist(identity.token);
+            should.exist(identity.serviceCatalog);
 
             done();
         });
@@ -146,10 +147,10 @@ describe('Authentication Tests', function() {
                 .replyWithFile(401, __dirname + '/mock/identity/401-invalid-apiKeyCredentials.json');
         }
 
-        identity.authorize(cfg, function(err, catalog) {
+        identity.authorize(cfg, function(err, identity) {
 
             should.exist(err);
-            should.not.exist(catalog);
+            should.not.exist(identity);
             err.unauthorized.message.should.equal('Username or api key is invalid');
 
             done();
@@ -177,10 +178,10 @@ describe('Authentication Tests', function() {
                 .replyWithFile(401, __dirname + '/mock/identity/401-invalid-apiKeyCredentials.json');
         }
 
-        identity.authorize(cfg, function(err, catalog) {
+        identity.authorize(cfg, function(err, auth) {
 
             should.exist(err);
-            should.not.exist(catalog);
+            should.not.exist(auth);
             err.unauthorized.code.should.equal(401);
 
             done();
@@ -206,10 +207,10 @@ describe('Authentication Tests', function() {
                 .replyWithFile(401, __dirname + '/mock/identity/401-invalid-passwordCredentials.json');
         }
 
-        identity.authorize(cfg, function(err, catalog) {
+        identity.authorize(cfg, function(err, auth) {
 
             should.exist(err);
-            should.not.exist(catalog);
+            should.not.exist(auth);
             err.unauthorized.message.should.equal('Unable to authenticate user with credentials provided.');
 
             done();
@@ -237,10 +238,10 @@ describe('Authentication Tests', function() {
                 .replyWithFile(401, __dirname + '/mock/identity/401-invalid-passwordCredentials.json');
         }
 
-        identity.authorize(cfg, function(err, catalog) {
+        identity.authorize(cfg, function(err, auth) {
 
             should.exist(err);
-            should.not.exist(catalog);
+            should.not.exist(auth);
             err.unauthorized.code.should.equal(401);
 
             done();
@@ -266,12 +267,12 @@ describe('Authentication Tests', function() {
                 .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
-        identity.authorize(cfg, function(err, catalog) {
+        identity.authorize(cfg, function(err, auth) {
 
             should.not.exist(err);
-            should.exist(catalog);
-            should.exist(catalog.token);
-            should.exist(catalog.services);
+            should.exist(auth);
+            should.exist(auth.token);
+            should.exist(auth.serviceCatalog);
 
             done();
         });
@@ -298,13 +299,13 @@ describe('Authentication Tests', function() {
                 .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
-        identity.authorize(cfg, function(err, catalog) {
+        identity.authorize(cfg, function(err, auth) {
 
             should.not.exist(err);
-            should.exist(catalog);
-            should.exist(catalog.token);
-            should.exist(catalog.services);
-            catalog.token.tenant.id.should.equal(cfg.tenantId);
+            should.exist(auth);
+            should.exist(auth.token);
+            should.exist(auth.serviceCatalog);
+            auth.token.tenant.id.should.equal(cfg.tenantId);
 
             done();
         });
@@ -331,14 +332,14 @@ describe('Authentication Tests', function() {
                 .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
-        identity.authorize(cfg, function(err, catalog) {
+        identity.authorize(cfg, function(err, auth) {
 
             should.not.exist(err);
-            should.exist(catalog);
-            should.exist(catalog.token);
-            should.exist(catalog.services);
+            should.exist(auth);
+            should.exist(auth.token);
+            should.exist(auth.serviceCatalog);
 
-            _.each(catalog.services, function(service) {
+            _.each(auth.serviceCatalog.services, function(service) {
                 if (service.selectedEndpoint.region) {
                     service.selectedEndpoint.region.toLowerCase().should.equal(cfg.region.toLowerCase());
                 }
@@ -369,11 +370,11 @@ describe('Authentication Tests', function() {
                 .replyWithFile(200, __dirname + '/mock/identity/missingRegionEndpoint.json');
         }
 
-        identity.authorize(cfg, function(err, catalog) {
+        identity.authorize(cfg, function(err, auth) {
 
             should.exist(err);
-            err.message.should.equal('Unable to parse service catalog');
-            should.not.exist(catalog);
+            err.message.should.equal('Unable to parse identity');
+            should.not.exist(auth);
 
             done();
         });
@@ -399,11 +400,11 @@ describe('Authentication Tests', function() {
                 .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
-        identity.authorize(cfg, function(err, catalog) {
+        identity.authorize(cfg, function(err, auth) {
 
             should.exist(err);
             err.error.should.equal('You must specify a region or configure a default region');
-            should.not.exist(catalog);
+            should.not.exist(auth);
 
             done();
         });
@@ -430,13 +431,13 @@ describe('Authentication Tests', function() {
                 .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
-        identity.authorize(cfg, function(err, catalog) {
+        identity.authorize(cfg, function(err, auth) {
 
             should.not.exist(err);
-            should.exist(catalog);
-            should.exist(catalog.services['cloudServersOpenStack']);
+            should.exist(auth);
+            should.exist(auth.serviceCatalog.services[services.cloudServersOpenStack]);
 
-            catalog.services['cloudServersOpenStack'].getEndpointUrl().should.equal('https://ord.servers.api.rackspacecloud.com/v2/809120');
+            auth.serviceCatalog.services[services.cloudServersOpenStack].getEndpointUrl().should.equal('https://ord.servers.api.rackspacecloud.com/v2/809120');
 
             done();
         });
@@ -463,13 +464,13 @@ describe('Authentication Tests', function() {
                 .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
-        identity.authorize(cfg, function(err, catalog) {
+        identity.authorize(cfg, function(err, auth) {
 
             should.not.exist(err);
-            should.exist(catalog);
-            should.exist(catalog.services['cloudServersOpenStack']);
+            should.exist(auth);
+            should.exist(auth.serviceCatalog.services[services.cloudServersOpenStack]);
 
-            catalog.services['cloudServersOpenStack'].getEndpointUrl({ internal: true}).should.equal('https://ord.servers.api.rackspacecloud.com/v2/809120');
+            auth.serviceCatalog.services[services.cloudServersOpenStack].getEndpointUrl({ internal: true}).should.equal('https://ord.servers.api.rackspacecloud.com/v2/809120');
 
             done();
         });
@@ -496,13 +497,13 @@ describe('Authentication Tests', function() {
                 .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
-        identity.authorize(cfg, function(err, catalog) {
+        identity.authorize(cfg, function(err, auth) {
 
             should.not.exist(err);
-            should.exist(catalog);
-            should.exist(catalog.services['cloudFiles']);
+            should.exist(auth);
+            should.exist(auth.serviceCatalog.services[services.cloudFiles]);
 
-            catalog.services['cloudFiles'].getEndpointUrl({ internal: true}).should.equal('https://snet-storage101.ord1.clouddrive.com/v1/MossoCloudFS_e5d24d36-6096-481d-8b88-d27fa087c2d6');
+            auth.serviceCatalog.services[services.cloudFiles].getEndpointUrl({ internal: true}).should.equal('https://snet-storage101.ord1.clouddrive.com/v1/MossoCloudFS_e5d24d36-6096-481d-8b88-d27fa087c2d6');
 
             done();
         });

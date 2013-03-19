@@ -1,4 +1,11 @@
 {
+    "name": "rackspace",
+    "description": "Working package for Rackspace node.js SDK",
+    "version":"0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/kenperkins/rackspace.git"
+    },
     "dependencies": {
         "request": "2.16.x",
         "underscore": "1.4.x",
@@ -9,6 +16,7 @@
         "mocha": "1.8.x",
         "should": "1.2.x"
     },
+    "main": "./lib/rackspace",
     "scripts": {
         "test": "make test"
     }
