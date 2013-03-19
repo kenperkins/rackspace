@@ -113,7 +113,7 @@ describe('Authentication Tests', function() {
                         apiKey: cfg.apiKey
                     }
                 }})
-                .replyWithFile(200, __dirname + '/mock/identity/usIdentityResponse-200.json');
+                .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
         identity.authorize(cfg, function(err, catalog) {
@@ -122,6 +122,126 @@ describe('Authentication Tests', function() {
             should.exist(catalog);
             should.exist(catalog.token);
             should.exist(catalog.services);
+
+            done();
+        });
+    });
+
+    it('Should fail to authenticate with bad apiKey & username', function(done) {
+
+        var cfg = config ? config : {
+            apiKey: 'asdf1234',
+            username: 'thisismyusername',
+            region: 'ORD'
+        };
+
+        if (mock) {
+            nock('https://identity.api.rackspacecloud.com')
+                .post('/v2.0/tokens', { auth: {
+                    'RAX-KSKEY:apiKeyCredentials': {
+                        username: cfg.username,
+                        apiKey: cfg.apiKey
+                    }
+                }})
+                .replyWithFile(401, __dirname + '/mock/identity/401-invalid-apiKeyCredentials.json');
+        }
+
+        identity.authorize(cfg, function(err, catalog) {
+
+            should.exist(err);
+            should.not.exist(catalog);
+            err.unauthorized.message.should.equal('Username or api key is invalid');
+
+            done();
+        });
+    });
+
+    it('Should fail to authenticate with apiKey & username & bad tenant', function(done) {
+
+        var cfg = config ? config : {
+            apiKey: 'asdf1234',
+            username: 'thisismyusername',
+            region: 'ORD',
+            tenantId: 'asdf12#$'
+        };
+
+        if (mock) {
+            nock('https://identity.api.rackspacecloud.com')
+                .post('/v2.0/tokens', { auth: {
+                    'RAX-KSKEY:apiKeyCredentials': {
+                        username: cfg.username,
+                        apiKey: cfg.apiKey
+                    },
+                    tenantId: cfg.tenantId
+                }})
+                .replyWithFile(401, __dirname + '/mock/identity/401-invalid-apiKeyCredentials.json');
+        }
+
+        identity.authorize(cfg, function(err, catalog) {
+
+            should.exist(err);
+            should.not.exist(catalog);
+            err.unauthorized.code.should.equal(401);
+
+            done();
+        });
+    });
+
+    it('Should fail to authenticate with bad password & username', function(done) {
+
+        var cfg = config ? config : {
+            password: 'asdf1234',
+            username: 'thisismyusername',
+            region: 'ORD'
+        };
+
+        if (mock) {
+            nock('https://identity.api.rackspacecloud.com')
+                .post('/v2.0/tokens', { auth: {
+                    'passwordCredentials': {
+                        username: cfg.username,
+                        password: cfg.password
+                    }
+                }})
+                .replyWithFile(401, __dirname + '/mock/identity/401-invalid-passwordCredentials.json');
+        }
+
+        identity.authorize(cfg, function(err, catalog) {
+
+            should.exist(err);
+            should.not.exist(catalog);
+            err.unauthorized.message.should.equal('Unable to authenticate user with credentials provided.');
+
+            done();
+        });
+    });
+
+    it('Should fail to authenticate with password & username & bad tenant', function(done) {
+
+        var cfg = config ? config : {
+            password: 'asdf1234',
+            username: 'thisismyusername',
+            tenantId: 'asdf12#$',
+            region: 'ORD'
+        };
+
+        if (mock) {
+            nock('https://identity.api.rackspacecloud.com')
+                .post('/v2.0/tokens', { auth: {
+                    'passwordCredentials': {
+                        username: cfg.username,
+                        password: cfg.password
+                    },
+                    tenantId: cfg.tenantId
+                }})
+                .replyWithFile(401, __dirname + '/mock/identity/401-invalid-passwordCredentials.json');
+        }
+
+        identity.authorize(cfg, function(err, catalog) {
+
+            should.exist(err);
+            should.not.exist(catalog);
+            err.unauthorized.code.should.equal(401);
 
             done();
         });
@@ -143,7 +263,7 @@ describe('Authentication Tests', function() {
                         password: cfg.password
                     }
                 }})
-                .replyWithFile(200, __dirname + '/mock/identity/usIdentityResponse-200.json');
+                .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
         identity.authorize(cfg, function(err, catalog) {
@@ -175,7 +295,7 @@ describe('Authentication Tests', function() {
                         tenantId: cfg.tenantId
                     }
                 })
-                .replyWithFile(200, __dirname + '/mock/identity/usIdentityResponse-200.json');
+                .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
         identity.authorize(cfg, function(err, catalog) {
@@ -208,7 +328,7 @@ describe('Authentication Tests', function() {
                         tenantId: cfg.tenantId
                     }
                 })
-                .replyWithFile(200, __dirname + '/mock/identity/usIdentityResponse-200.json');
+                .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
         identity.authorize(cfg, function(err, catalog) {
@@ -276,7 +396,7 @@ describe('Authentication Tests', function() {
                         tenantId: cfg.tenantId
                     }
                 })
-                .replyWithFile(200, __dirname + '/mock/identity/usIdentityResponse-200.json');
+                .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
         identity.authorize(cfg, function(err, catalog) {
@@ -307,7 +427,7 @@ describe('Authentication Tests', function() {
                         tenantId: cfg.tenantId
                     }
                 })
-                .replyWithFile(200, __dirname + '/mock/identity/usIdentityResponse-200.json');
+                .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
         identity.authorize(cfg, function(err, catalog) {
@@ -340,7 +460,7 @@ describe('Authentication Tests', function() {
                         tenantId: cfg.tenantId
                     }
                 })
-                .replyWithFile(200, __dirname + '/mock/identity/usIdentityResponse-200.json');
+                .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
         identity.authorize(cfg, function(err, catalog) {
@@ -373,7 +493,7 @@ describe('Authentication Tests', function() {
                         tenantId: cfg.tenantId
                     }
                 })
-                .replyWithFile(200, __dirname + '/mock/identity/usIdentityResponse-200.json');
+                .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
         }
 
         identity.authorize(cfg, function(err, catalog) {
