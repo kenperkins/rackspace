@@ -128,6 +128,36 @@ describe('Authentication Tests', function() {
         });
     });
 
+    it('Token expires should be a date object', function(done) {
+
+        var cfg = config ? config : {
+            apiKey: 'asdf1234',
+            username: 'thisismyusername',
+            region: 'ORD'
+        };
+
+        if (mock) {
+            nock('https://identity.api.rackspacecloud.com')
+                .post('/v2.0/tokens', { auth: {
+                    'RAX-KSKEY:apiKeyCredentials': {
+                        username: cfg.username,
+                        apiKey: cfg.apiKey
+                    }
+                }})
+                .replyWithFile(200, __dirname + '/mock/identity/200-USA-identity-response.json');
+        }
+
+        identity.authorize(cfg, function(err, identity) {
+
+            should.not.exist(err);
+            should.exist(identity);
+            should.exist(identity.token);
+            identity.token.expires.should.be.instanceof(Date);
+
+            done();
+        });
+    });
+
     it('Should fail to authenticate with bad apiKey & username', function(done) {
 
         var cfg = config ? config : {
