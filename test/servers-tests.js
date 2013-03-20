@@ -1,7 +1,7 @@
 //
 
 var rackspace = require('../lib/rackspace'),
-    services = require('../lib/client/services').services,
+    services = rackspace.core.services,
     should = require('should'),
     nock = require('nock'),
     _ = require('underscore'),
