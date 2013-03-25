@@ -166,7 +166,7 @@
                     "name": "identity:user-admin"
                 }
             ],
-            "name": "kpraxtest",
+            "name": "demo",
             "RAX-AUTH:defaultRegion": ""
         }
     }
