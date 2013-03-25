@@ -1,7 +1,7 @@
 {
     "name": "rackspace",
     "description": "Working package for Rackspace node.js SDK",
-    "version":"0.0.1",
+    "version":"0.0.2",
     "repository": {
         "type": "git",
         "url": "http://github.com/kenperkins/rackspace.git"
@@ -11,7 +11,7 @@
         "underscore": "1.4.x",
         "async": "0.2.x",
         "pkginfo": "0.3.x",
-        "openstack": "0.0.x"
+        "openstack": ">=0.0.2"
     },
     "devDependencies": {
         "nock": "0.16.x",
