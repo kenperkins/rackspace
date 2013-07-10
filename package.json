@@ -1,26 +1,10 @@
 {
     "name": "rackspace",
-    "description": "Working package for Rackspace node.js SDK",
-    "version":"0.0.2",
+    "description": "Deprecated, please use pkgcloud",
+    "version":"0.0.3",
     "repository": {
         "type": "git",
         "url": "http://github.com/kenperkins/rackspace.git"
-    },
-    "dependencies": {
-        "request": "2.16.x",
-        "underscore": "1.4.x",
-        "async": "0.2.x",
-        "pkginfo": "0.3.x",
-        "openstack": ">=0.0.2"
-    },
-    "devDependencies": {
-        "nock": "0.16.x",
-        "mocha": "1.8.x",
-        "should": "1.2.x"
-    },
-    "main": "./lib/rackspace",
-    "scripts": {
-        "test": "make test"
     }
 }
 

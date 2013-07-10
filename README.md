@@ -1,5 +1,3 @@
 # Rackspace
 
-The working repository for the node.js package for Rackspace.
-
-[![Build Status](https://travis-ci.org/kenperkins/rackspace.png)](https://travis-ci.org/kenperkins/rackspace)
+This package is deprecated. Please use [pkgcloud](https://github.com/nodejitsu/pkgcloud) for Rackspace with node.js.
